@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't Move the cursor</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container" id="container">
+    <h1 class="title">DO NOT MOVE YOUR CURSOR!</h1>
+    <h4 class="warning">Warning! If you are epileptic, GET OFF THIS SITE</h4>
+    <!-- Text element to disappear on click -->
+    <div id="centerText" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; color: white; z-index: 999;">
+        Click To Activate😏</div>
+    <!-- Autoplay with loop -->
+    <audio id="audio" loop src="audio.mp3"></audio>
+</div>
+<script>
+    var audio = document.getElementById('audio');
+    var container = document.getElementById('container');
+    var centerText = document.getElementById('centerText');
+    var isActivated = false; // Flag to check if the interaction is allowed
+
+    function playAudio() {
+        if (isActivated) {
+            audio.play().then(() => {
+                console.log("Audio is playing");
+            }).catch(err => {
+                console.error("Audio play failed:", err);
+            });
+        }
+    }
+
+    function pauseAudio() {
+        if (isActivated) {
+            audio.pause();
+            audio.currentTime = 0; // Reset the audio to the start
+            console.log("Audio is paused");
+        }
+    }
+
+    // FOR MOVE PLAY/PAUSE FUNCTION
+    let isMoving = false;
+    let timeout;
+    let gifOverlay;
+
+    function onMouseMove(event) {
+        if (!isActivated) return; // Do nothing if interaction is not allowed
+
+        if (!isMoving) {
+            console.log("Mouse started moving");
+            playAudio();
+            isMoving = true;
+        }
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            pauseAudio();
+            container.style.backgroundColor = "#000000"
+            console.log("Mouse stopped moving");
+            isMoving = false;
+            if (gifOverlay) {
+                gifOverlay.style.display = 'none'; // Hide the GIF when the mouse stops moving
+            }
+        }, 200); // Adjust the delay as needed
+
+        // Change the background color of the container
+        if (container) {
+            container.style.backgroundColor = getRandomHexColor();
+        }
+
+        // Show the GIF and position it in the center of the page
+        if (gifOverlay) {
+            gifOverlay.style.display = 'block'; // Show the GIF
+            gifOverlay.style.left = `${window.innerWidth / 2 - gifOverlay.width / 2}px`;
+            gifOverlay.style.top = `${window.innerHeight / 2 - gifOverlay.height / 2}px`;
+        }
+    }
+
+    // Function to create and append the GIF overlay
+    function createGifOverlay() {
+        gifOverlay = document.createElement('img');
+        gifOverlay.src = 'cat.gif'; // Path to your GIF file
+        gifOverlay.style.position = 'absolute';
+        gifOverlay.style.display = 'none'; // Hide the GIF by default
+        gifOverlay.style.pointerEvents = 'none'; // Prevent the overlay from blocking interactions
+        gifOverlay.style.zIndex = '1000'; // Make sure it's above other elements
+        gifOverlay.style.width = '400px'; // Adjust size as needed
+        gifOverlay.style.height = '400px'; // Adjust size as needed
+        gifOverlay.style.opacity = 0.6;
+        document.body.appendChild(gifOverlay);
+    }
+
+    // Function to generate a random hex color
+    function getRandomHexColor() {
+        return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    }
+
+    // Add event listener for container click to hide the text and activate interaction
+    container.addEventListener('click', () => {
+        if (centerText) {
+            centerText.style.display = 'none';
+            isActivated = true; // Set the flag to true to allow other interactions
+        }
+    });
+
+    // Attach the event listener when the DOM content is fully loaded
+    document.addEventListener("DOMContentLoaded", () => {
+        createGifOverlay();
+        document.addEventListener("mousemove", onMouseMove);
+    });
+</script>
+</body>
+</html>
