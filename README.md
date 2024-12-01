@@ -4,4 +4,4 @@ no but seriously, if you have epilepsy and prone to seisures do not go on this w
 
 ## WEBSITE LINK: https://amro-elata.github.io/cursorjam/
 
-![image](https://github.com/user-attachments/assets/d8903b9d-6253-43f2-a868-0761c032cb88)
+![image](https://github.com/user-attachments/assets/a96a8f76-c139-436d-953f-3e9f1952e0a3)
